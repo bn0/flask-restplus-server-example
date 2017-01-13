@@ -51,3 +51,7 @@ local_config.py
 static/
 example.db
 .idea/
+
+# macOS blight
+.DS_Store
+
