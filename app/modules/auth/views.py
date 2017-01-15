@@ -21,7 +21,11 @@ from . import parameters
 from .models import OAuth2Client
 
 
-auth_blueprint = Blueprint('auth', __name__, url_prefix='/auth')  # pylint: disable=invalid-name
+auth_blueprint = Blueprint(
+    'auth',
+    __name__,
+    url_prefix='/auth'
+)  # pylint: disable=invalid-name
 
 
 @auth_blueprint.route('/oauth2/token', methods=['GET', 'POST'])
@@ -37,6 +41,7 @@ def access_token(*args, **kwargs):
     """
     return None
 
+
 @auth_blueprint.route('/oauth2/revoke', methods=['POST'])
 @oauth2.revoke_handler
 def revoke_token():
@@ -44,6 +49,7 @@ def revoke_token():
     This endpoint allows a user to revoke their access token.
     """
     pass
+
 
 @auth_blueprint.route('/oauth2/authorize', methods=['GET', 'POST'])
 @oauth2.authorize_handler

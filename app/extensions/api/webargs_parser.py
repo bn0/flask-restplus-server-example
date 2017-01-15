@@ -22,5 +22,6 @@ class CustomWebargsParser(FlaskParser):
         Handles errors during parsing. Aborts the current HTTP request and
         responds with a 422 error.
         """
-        status_code = getattr(error, 'status_code', self.DEFAULT_VALIDATION_STATUS)
+        status_code = getattr(error, 'status_code',
+                              self.DEFAULT_VALIDATION_STATUS)
         abort(status_code, messages=error.messages)

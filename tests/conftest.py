@@ -17,6 +17,7 @@ def flask_app():
         yield app
         db.drop_all()
 
+
 @pytest.yield_fixture()
 def db(flask_app):
     # pylint: disable=unused-argument,invalid-name
@@ -24,11 +25,13 @@ def db(flask_app):
     yield db_instance
     db_instance.session.rollback()
 
+
 @pytest.fixture(scope='session')
 def flask_app_client(flask_app):
     flask_app.test_client_class = utils.AutoAuthFlaskClient
     flask_app.response_class = utils.JSONResponse
     return flask_app.test_client()
+
 
 @pytest.yield_fixture(scope='session')
 def regular_user(flask_app):
@@ -44,6 +47,7 @@ def regular_user(flask_app):
     yield regular_user_instance
     db.session.delete(regular_user_instance)
     db.session.commit()
+
 
 @pytest.yield_fixture(scope='session')
 def readonly_user(flask_app):
@@ -61,6 +65,7 @@ def readonly_user(flask_app):
     db.session.delete(readonly_user_instance)
     db.session.commit()
 
+
 @pytest.yield_fixture(scope='session')
 def admin_user(flask_app):
     # pylint: disable=invalid-name,unused-argument
@@ -76,6 +81,7 @@ def admin_user(flask_app):
     yield admin_user_instance
     db.session.delete(admin_user_instance)
     db.session.commit()
+
 
 @pytest.yield_fixture(scope='session')
 def internal_user(flask_app):

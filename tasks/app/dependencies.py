@@ -24,8 +24,10 @@ def install_python_dependencies(context, force=False):
     Install Python dependencies listed in requirements.txt.
     """
     log.info("Installing project dependencies...")
-    context.run("pip install -r requirements.txt %s" % ('--upgrade' if force else ''))
+    context.run(
+        "pip install -r requirements.txt %s" % ('--upgrade' if force else ''))
     log.info("Project dependencies are installed.")
+
 
 @task
 def install_swagger_ui(context, force=False):
@@ -44,8 +46,10 @@ def install_swagger_ui(context, force=False):
     except FileExistsError:
         pass
 
-    swagger_ui_zip_filepath = os.path.join(context.app.static_root, 'bower', 'swagger-ui.zip')
-    swagger_ui_root = os.path.join(context.app.static_root, 'bower', 'swagger-ui')
+    swagger_ui_zip_filepath = os.path.join(
+        context.app.static_root, 'bower', 'swagger-ui.zip')
+    swagger_ui_root = os.path.join(
+        context.app.static_root, 'bower', 'swagger-ui')
 
     if force:
         try:
@@ -57,7 +61,8 @@ def install_swagger_ui(context, force=False):
         except FileNotFoundError:
             pass
 
-    # We are going to install Swagger UI from a fork which includes useful patches
+    # We are going to install Swagger UI from a fork which
+    # includes useful patches
     log.info("Downloading Swagger UI assets...")
     download_file(
         url="https://github.com/frol/swagger-ui/archive/implement-oauth2-password-flow-rebased.zip",
@@ -95,6 +100,7 @@ def install_swagger_ui(context, force=False):
                         unzipped_file.write(zipped_file.read())
 
     log.info("Swagger UI is installed.")
+
 
 @task
 def install(context):

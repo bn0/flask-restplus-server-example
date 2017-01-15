@@ -4,7 +4,7 @@ import pytest
 
 
 @pytest.yield_fixture()
-def regular_user_oauth2_client(regular_user ,db):
+def regular_user_oauth2_client(regular_user, db):
     # pylint: disable=invalid-name,unused-argument
     from app.modules.auth.models import OAuth2Client
 

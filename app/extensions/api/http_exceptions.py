@@ -5,7 +5,8 @@ HTTP exceptions collection
 """
 
 from flask_restplus.errors import abort as restplus_abort
-from werkzeug.exceptions import Unauthorized, Forbidden, NotFound, Conflict, UnprocessableEntity
+from werkzeug.exceptions import Unauthorized, Forbidden, \
+    NotFound, Conflict, UnprocessableEntity
 
 
 API_DEFAULT_HTTP_CODE_MESSAGES = {

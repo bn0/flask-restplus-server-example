@@ -20,6 +20,7 @@ def load_user_from_request(request):
             user = oauth.user
     return user
 
+
 def init_app(app, **kwargs):
     # pylint: disable=unused-argument
     """
@@ -29,8 +30,14 @@ def init_app(app, **kwargs):
     login_manager.request_loader(load_user_from_request)
 
     # Register OAuth scopes
-    api_v1.add_oauth_scope('auth:read', "Provide access to auth details")
-    api_v1.add_oauth_scope('auth:write', "Provide write access to auth details")
+    api_v1.add_oauth_scope(
+        'auth:read',
+        "Provide access to auth details"
+    )
+    api_v1.add_oauth_scope(
+        'auth:write',
+        "Provide write access to auth details"
+    )
 
     # Touch underlying modules
     from . import models, views, resources

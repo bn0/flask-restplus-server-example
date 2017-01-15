@@ -74,9 +74,11 @@ class User(db.Model, Timestamp):
 
     static_roles = db.Column(db.Integer, default=0, nullable=False)
 
-    is_internal = _get_is_static_role_property('is_internal', StaticRoles.INTERNAL)
+    is_internal = _get_is_static_role_property(
+        'is_internal', StaticRoles.INTERNAL)
     is_admin = _get_is_static_role_property('is_admin', StaticRoles.ADMIN)
-    is_regular_user = _get_is_static_role_property('is_regular_user', StaticRoles.REGULAR_USER)
+    is_regular_user = _get_is_static_role_property(
+        'is_regular_user', StaticRoles.REGULAR_USER)
     is_active = _get_is_static_role_property('is_active', StaticRoles.ACTIVE)
 
     def __repr__(self):

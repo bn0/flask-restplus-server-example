@@ -9,6 +9,7 @@ def test_BaseUserSchema_dump_empty_input():
     assert dumped_result.errors == {}
     assert dumped_result.data == {}
 
+
 def test_BaseUserSchema_dump_user_instance(user_instance):
     user_instance.password = "password"
     dumped_result = schemas.BaseUserSchema().dump(user_instance)
@@ -21,6 +22,7 @@ def test_BaseUserSchema_dump_user_instance(user_instance):
         'middle_name',
         'last_name'
     }
+
 
 def test_DetailedUserSchema_dump_user_instance(user_instance):
     user_instance.password = "password"
@@ -40,6 +42,7 @@ def test_DetailedUserSchema_dump_user_instance(user_instance):
         'is_regular_user',
         'is_admin',
     }
+
 
 def test_UserSignupFormSchema_dump():
     form_data = {'recaptcha_server_key': 'key'}

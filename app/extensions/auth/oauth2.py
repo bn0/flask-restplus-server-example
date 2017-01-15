@@ -32,7 +32,8 @@ class OAuth2RequestValidator(provider.OAuth2RequestValidator):
     """
 
     def __init__(self):
-        from app.modules.auth.models import OAuth2Client, OAuth2Grant, OAuth2Token
+        from app.modules.auth.models import OAuth2Client, \
+            OAuth2Grant, OAuth2Token
         self._client_class = OAuth2Client
         self._grant_class = OAuth2Grant
         self._token_class = OAuth2Token

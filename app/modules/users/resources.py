@@ -51,7 +51,7 @@ class Users(Resource):
         with api.commit_or_abort(
                 db.session,
                 default_error_message="Failed to create a new user."
-            ):
+        ):
             new_user = User(**args)
             db.session.add(new_user)
         return new_user
@@ -65,8 +65,9 @@ class UserSignupForm(Resource):
         """
         Get signup form keys.
 
-        This endpoint must be used in order to get a server reCAPTCHA public key which
-        must be used to receive a reCAPTCHA secret key for POST /users/ form.
+        This endpoint must be used in order to get a server reCAPTCHA
+        public key which must be used to receive a reCAPTCHA secret key
+        for POST /users/ form.
         """
         # TODO:
         return {"recaptcha_server_key": "TODO"}
@@ -111,7 +112,7 @@ class UserByID(Resource):
         with api.commit_or_abort(
                 db.session,
                 default_error_message="Failed to update user details."
-            ):
+        ):
             parameters.PatchUserDetailsParameters.perform_patch(args, user)
             db.session.merge(user)
         return user

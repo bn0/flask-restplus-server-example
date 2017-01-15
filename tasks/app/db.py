@@ -13,18 +13,20 @@ import os
 from ._utils import app_context_task
 
 
-log = logging.getLogger(__name__) # pylint: disable=invalid-name
+log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 try:
     from alembic import __version__ as __alembic_version__
     from alembic.config import Config as AlembicConfig
     from alembic import command
 except ImportError:
-    log.warning("Alembic cannot be imported, so some app.db.* tasks won't be available!")
+    log.warning(
+        "Alembic cannot be imported, so some app.db.* "
+        "tasks won't be available!")
 else:
 
-    alembic_version = tuple([int(v) for v in __alembic_version__.split('.')[0:3]])
-
+    alembic_version = tuple(
+        [int(v) for v in __alembic_version__.split('.')[0:3]])
 
     class Config(AlembicConfig):
         """
@@ -52,6 +54,7 @@ def _get_config(directory, x_arg=None, opts=None):
             config.cmd_opts.x.append(x_arg)
     return config
 
+
 @app_context_task(
     help={
         'directory': "migration script directory",
@@ -75,15 +78,18 @@ def init(context, directory='migrations', multidb=False):
         'version_path': "Specify specific path from config for version file",
         'branch_label': "Specify a branch label to apply to the new revision",
         'splice': "Allow a non-head revision as the 'head' to splice onto",
-        'head': "Specify head revision or <branchname>@head to base new revision on",
+        'head': "Specify head revision or <branchname>@head to base new "
+                "revision on",
         'sql': "Don't emit SQL to database - dump to standard output instead",
-        'autogenerate': "Populate revision script with andidate migration operatons, based " \
-                        "on comparison of database to model",
+        'autogenerate': "Populate revision script with andidate migration "
+                        "operatons, based on comparison of database to model",
         'directory': "migration script directory",
     }
 )
-def revision(context, directory='migrations', message=None, autogenerate=False, sql=False,
-             head='head', splice=False, branch_label=None, version_path=None, rev_id=None):
+def revision(
+        context, directory='migrations', message=None, autogenerate=False,
+        sql=False, head='head', splice=False, branch_label=None,
+        version_path=None, rev_id=None):
     """Create a new revision file."""
     config = _get_config(directory)
     if alembic_version >= (0, 7, 0):
@@ -93,27 +99,32 @@ def revision(context, directory='migrations', message=None, autogenerate=False, 
     else:
         command.revision(config, message, autogenerate=autogenerate, sql=sql)
 
+
 @app_context_task(
     help={
         'rev_id': "Specify a hardcoded revision id instead of generating one",
         'version_path': "Specify specific path from config for version file",
         'branch_label': "Specify a branch label to apply to the new revision",
         'splice': "Allow a non-head revision as the 'head' to splice onto",
-        'head': "Specify head revision or <branchname>@head to base new revision on",
+        'head': "Specify head revision or <branchname>@head to base new "
+                "revision on",
         'sql': "Don't emit SQL to database - dump to standard output instead",
         'directory': "migration script directory",
     }
 )
-def migrate(context, directory='migrations', message=None, sql=False, head='head', splice=False,
-            branch_label=None, version_path=None, rev_id=None):
+def migrate(
+        context, directory='migrations', message=None, sql=False, head='head',
+        splice=False, branch_label=None, version_path=None, rev_id=None):
     """Alias for 'revision --autogenerate'"""
     config = _get_config(directory, opts=['autogenerate'])
     if alembic_version >= (0, 7, 0):
-        command.revision(config, message, autogenerate=True, sql=sql, head=head,
-                         splice=splice, branch_label=branch_label,
-                         version_path=version_path, rev_id=rev_id)
+        command.revision(
+            config, message, autogenerate=True, sql=sql, head=head,
+            splice=splice, branch_label=branch_label,
+            version_path=version_path, rev_id=rev_id)
     else:
         command.revision(config, message, autogenerate=True, sql=sql)
+
 
 @app_context_task(
     help={
@@ -129,6 +140,7 @@ def edit(context, revision='current', directory='migrations'):
     else:
         raise RuntimeError('Alembic 0.8.0 or greater is required')
 
+
 @app_context_task(
     help={
         'rev_id': "Specify a hardcoded revision id instead of generating one",
@@ -137,8 +149,9 @@ def edit(context, revision='current', directory='migrations'):
         'directory': "migration script directory",
     }
 )
-def merge(context, directory='migrations', revisions='', message=None, branch_label=None,
-          rev_id=None):
+def merge(
+        context, directory='migrations', revisions='', message=None,
+        branch_label=None, rev_id=None):
     """Merge two revisions together.  Creates a new migration file"""
     if alembic_version >= (0, 7, 0):
         config = _get_config(directory)
@@ -146,6 +159,7 @@ def merge(context, directory='migrations', revisions='', message=None, branch_la
                       branch_label=branch_label, rev_id=rev_id)
     else:
         raise RuntimeError('Alembic 0.7.0 or greater is required')
+
 
 @app_context_task(
     help={
@@ -156,8 +170,9 @@ def merge(context, directory='migrations', revisions='', message=None, branch_la
         'x_arg': "Additional arguments consumed by custom env.py scripts",
     }
 )
-def upgrade(context, directory='migrations', revision='head', sql=False, tag=None, x_arg=None,
-            app=None):
+def upgrade(
+        context, directory='migrations', revision='head', sql=False, tag=None,
+        x_arg=None, app=None):
     """Upgrade to a later version"""
     config = _get_config(directory, x_arg=x_arg)
     command.upgrade(config, revision, sql=sql, tag=tag)
@@ -172,12 +187,15 @@ def upgrade(context, directory='migrations', revision='head', sql=False, tag=Non
         'x_arg': "Additional arguments consumed by custom env.py scripts",
     }
 )
-def downgrade(context, directory='migrations', revision='-1', sql=False, tag=None, x_arg=None):
+def downgrade(
+        context, directory='migrations', revision='-1', sql=False, tag=None,
+        x_arg=None):
     """Revert to a previous version"""
     config = _get_config(directory, x_arg=x_arg)
     if sql and revision == '-1':
         revision = 'head:-1'
     command.downgrade(config, revision, sql=sql, tag=tag)
+
 
 @app_context_task(
     help={
@@ -192,6 +210,7 @@ def show(context, directory='migrations', revision='head'):
         command.show(config, revision)
     else:
         raise RuntimeError('Alembic 0.7.0 or greater is required')
+
 
 @app_context_task(
     help={
@@ -208,6 +227,7 @@ def history(context, directory='migrations', rev_range=None, verbose=False):
     else:
         command.history(config, rev_range)
 
+
 @app_context_task(
     help={
         'resolve_dependencies': "Treat dependency versions as down revisions",
@@ -215,7 +235,9 @@ def history(context, directory='migrations', rev_range=None, verbose=False):
         'directory': "migration script directory",
     }
 )
-def heads(context, directory='migrations', verbose=False, resolve_dependencies=False):
+def heads(
+        context, directory='migrations', verbose=False,
+        resolve_dependencies=False):
     """Show current available heads in the script directory"""
     if alembic_version >= (0, 7, 0):
         config = _get_config(directory)
@@ -223,6 +245,7 @@ def heads(context, directory='migrations', verbose=False, resolve_dependencies=F
                       resolve_dependencies=resolve_dependencies)
     else:
         raise RuntimeError('Alembic 0.7.0 or greater is required')
+
 
 @app_context_task(
     help={
@@ -237,6 +260,7 @@ def branches(context, directory='migrations', verbose=False):
         command.branches(config, verbose=verbose)
     else:
         command.branches(config)
+
 
 @app_context_task(
     help={
@@ -253,6 +277,7 @@ def current(context, directory='migrations', verbose=False, head_only=False):
     else:
         command.current(config)
 
+
 @app_context_task(
     help={
         'tag': "Arbitrary 'tag' name - can be used by custom env.py scripts",
@@ -261,7 +286,8 @@ def current(context, directory='migrations', verbose=False, head_only=False):
         'directory': "migration script directory",
     }
 )
-def stamp(context, directory='migrations', revision='head', sql=False, tag=None):
+def stamp(
+        context, directory='migrations', revision='head', sql=False, tag=None):
     """'stamp' the revision table with the given revision; don't run any
     migrations"""
     config = _get_config(directory)
@@ -286,8 +312,8 @@ def init_development_data(context, upgrade_db=True, skip_on_failure=False):
             log.error("%s", exception)
         else:
             log.debug(
-                "The following error was ignored due to the `skip_on_failure` flag: %s",
-                exception
+                "The following error was ignored due to the "
+                "`skip_on_failure` flag: %s", exception
             )
             log.info("Initializing development data step is skipped.")
     else:

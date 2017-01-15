@@ -1,10 +1,14 @@
 # pylint: disable=missing-docstring
 import pytest
 
-@pytest.mark.parametrize('path,status_code', (
-    ('/api/v1/teams/', 401),
-    ('/api/v1/users/1', 401),
-))
+
+@pytest.mark.parametrize(
+    'path,status_code',
+    (
+        ('/api/v1/teams/', 401),
+        ('/api/v1/users/1', 401)
+    ),
+)
 def test_teams_options_unauthorized(path, status_code, flask_app_client):
     response = flask_app_client.options(path)
 
@@ -23,9 +27,11 @@ def test_teams_options_authorized(
         regular_user,
         team_for_regular_user,
         team_for_nobody
-    ):
-    with flask_app_client.login(regular_user, auth_scopes=('teams:write', 'teams:read')):
+):
+    with flask_app_client.login(
+            regular_user, auth_scopes=('teams:write', 'teams:read')):
         response = flask_app_client.options(path)
 
     assert response.status_code == 204
-    assert set(response.headers['Allow'].split(', ')) == expected_allowed_methods
+    assert set(response.headers['Allow'].split(', ')) == \
+        expected_allowed_methods

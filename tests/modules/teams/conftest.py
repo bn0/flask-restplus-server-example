@@ -11,9 +11,16 @@ def team_for_regular_user(db, regular_user, readonly_user):
 
     team = Team(title="Regular User's team")
     db.session.add(team)
-    regular_user_team_member = TeamMember(team=team, user=regular_user, is_leader=True)
+    regular_user_team_member = TeamMember(
+        team=team,
+        user=regular_user,
+        is_leader=True
+    )
     db.session.add(regular_user_team_member)
-    readonly_user_team_member = TeamMember(team=team, user=readonly_user)
+    readonly_user_team_member = TeamMember(
+        team=team,
+        user=readonly_user
+    )
     db.session.add(readonly_user_team_member)
     db.session.commit()
 
@@ -24,6 +31,7 @@ def team_for_regular_user(db, regular_user, readonly_user):
     db.session.delete(regular_user_team_member)
     db.session.delete(team)
     db.session.commit()
+
 
 @pytest.yield_fixture()
 def team_for_nobody(db):  # pylint: disable=invalid-name

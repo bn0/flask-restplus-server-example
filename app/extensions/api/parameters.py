@@ -16,7 +16,8 @@ class PaginationParameters(Parameters):
     """
 
     limit = base_fields.Integer(
-        description="limit a number of items (allowed range is 1-100), default is 20.",
+        description="limit a number of items (allowed range is 1-100), "
+                    "default is 20.",
         missing=20,
         validate=validate.Range(min=1, max=100)
     )

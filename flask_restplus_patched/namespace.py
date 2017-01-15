@@ -33,7 +33,8 @@ class Namespace(OriginalNamespace):
 
     def resolve_object(self, object_arg_name, resolver):
         """
-        A helper decorator to resolve object instance from arguments (e.g. identity).
+        A helper decorator to resolve object instance from
+        arguments (e.g. identity).
 
         Example:
         >>> @namespace.route('/<int:user_id>')
@@ -85,9 +86,8 @@ class Namespace(OriginalNamespace):
 
             return self.doc(params=parameters)(
                 self.response(code=http_exceptions.UnprocessableEntity.code)(
-                    self.WEBARGS_PARSER.use_args(parameters, locations=_locations)(
-                        func
-                    )
+                    self.WEBARGS_PARSER.use_args(
+                        parameters, locations=_locations)(func)
                 )
             )
 
@@ -116,18 +116,21 @@ class Namespace(OriginalNamespace):
         ...         abort(403)
         ...     return Team.query.all()
         """
-        ALLOWED_EMPTY_BODY_STATUSES = (HTTPStatus.NO_CONTENT, HTTPStatus.ACCEPTED)
+        ALLOWED_EMPTY_BODY_STATUSES = \
+            (HTTPStatus.NO_CONTENT, HTTPStatus.ACCEPTED)
 
         if model is None and code not in ALLOWED_EMPTY_BODY_STATUSES:
             if code not in http_exceptions.default_exceptions:
-                raise ValueError("`model` parameter is required for code %d" % code)
+                raise ValueError(
+                    "`model` parameter is required for code %d" % code)
             model = self.model(
                 name='HTTPError%d' % code,
                 model=DefaultHTTPErrorSchema(http_code=code)
             )
         if description is None:
             if code in http_exceptions.default_exceptions:
-                description = http_exceptions.default_exceptions[code].description
+                description = \
+                    http_exceptions.default_exceptions[code].description
             elif code in ALLOWED_EMPTY_BODY_STATUSES:
                 description = 'Request fulfilled, nothing follows'
 
@@ -167,7 +170,8 @@ class Namespace(OriginalNamespace):
             elif isinstance(func_or_class, type):
                 # Handle Resource classes decoration
                 # pylint: disable=protected-access
-                func_or_class._apply_decorator_to_methods(response_serializer_decorator)
+                func_or_class._apply_decorator_to_methods(
+                    response_serializer_decorator)
                 decorated_func_or_class = func_or_class
             else:
                 decorated_func_or_class = wraps(func_or_class)(
@@ -184,12 +188,16 @@ class Namespace(OriginalNamespace):
                 if getattr(model, 'many', False):
                     api_model = [api_model]
 
-            return self.doc(responses={code: (description, api_model)})(decorated_func_or_class)
+            return self.doc(
+                responses={
+                    code: (description, api_model)
+                })(decorated_func_or_class)
 
         return decorator
 
     def route(self, *args, **kwargs):
         base_wrapper = super(Namespace, self).route(*args, **kwargs)
+
         def wrapper(cls):
             if 'OPTIONS' in cls.methods:
                 cls.options = self.response(code=204)(cls.options)

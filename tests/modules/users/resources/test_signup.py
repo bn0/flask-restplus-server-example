@@ -8,6 +8,7 @@ def test_signup_form(flask_app_client):
     assert response.content_type == 'application/json'
     assert set(response.json.keys()) == {"recaptcha_server_key"}
 
+
 def create_new_user(flask_app_client, data, must_succeed=True):
     """
     Helper function for valid new user creation.
@@ -24,6 +25,7 @@ def create_new_user(flask_app_client, data, must_succeed=True):
         assert set(response.json.keys()) >= {'id', 'username'}
         return response.json['id']
     return response
+
 
 def test_new_user_creation(patch_User_password_scheme, flask_app_client, db):
     # pylint: disable=invalid-name,unused-argument
@@ -48,6 +50,7 @@ def test_new_user_creation(patch_User_password_scheme, flask_app_client, db):
     db.session.delete(user1_instance)
     db.session.commit()
 
+
 def test_new_user_creation_without_captcha_must_fail(flask_app_client):
     # pylint: disable=invalid-name
     response = create_new_user(
@@ -64,6 +67,7 @@ def test_new_user_creation_without_captcha_must_fail(flask_app_client):
     assert response.content_type == 'application/json'
     assert set(response.json.keys()) >= {'status', 'message'}
 
+
 def test_new_user_creation_with_incorrect_captcha_must_fail(flask_app_client):
     # pylint: disable=invalid-name
     response = create_new_user(
@@ -79,6 +83,7 @@ def test_new_user_creation_with_incorrect_captcha_must_fail(flask_app_client):
     assert response.status_code == 403
     assert response.content_type == 'application/json'
     assert set(response.json.keys()) >= {'status', 'message'}
+
 
 def test_new_user_creation_without_captcha_but_admin_user(
         patch_User_password_scheme,
@@ -109,6 +114,7 @@ def test_new_user_creation_without_captcha_but_admin_user(
 
     db.session.delete(user1_instance)
     db.session.commit()
+
 
 def test_new_user_creation_duplicate_must_fail(flask_app_client, db):
     # pylint: disable=invalid-name

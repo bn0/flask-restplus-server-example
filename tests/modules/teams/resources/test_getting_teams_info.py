@@ -56,7 +56,8 @@ def test_getting_team_info_by_unauthorized_user_must_fail(
 ):
     # pylint: disable=invalid-name
     with flask_app_client.login(regular_user, auth_scopes=auth_scopes):
-        response = flask_app_client.get('/api/v1/teams/%d' % team_for_regular_user.id)
+        response = flask_app_client.get(
+            '/api/v1/teams/%d' % team_for_regular_user.id)
 
     assert response.status_code == 401
     assert response.content_type == 'application/json'
@@ -75,7 +76,8 @@ def test_getting_team_info_by_authorized_user(
 ):
     # pylint: disable=invalid-name
     with flask_app_client.login(regular_user, auth_scopes=auth_scopes):
-        response = flask_app_client.get('/api/v1/teams/%d' % team_for_regular_user.id)
+        response = flask_app_client.get(
+            '/api/v1/teams/%d' % team_for_regular_user.id)
 
     assert response.status_code == 200
     assert response.content_type == 'application/json'
@@ -96,7 +98,8 @@ def test_getting_list_of_team_members_by_unauthorized_user_must_fail(
 ):
     # pylint: disable=invalid-name
     with flask_app_client.login(regular_user, auth_scopes=auth_scopes):
-        response = flask_app_client.get('/api/v1/teams/%d/members/' % team_for_regular_user.id)
+        response = flask_app_client.get(
+            '/api/v1/teams/%d/members/' % team_for_regular_user.id)
 
     assert response.status_code == 401
     assert response.content_type == 'application/json'
@@ -115,11 +118,14 @@ def test_getting_list_of_team_members_by_authorized_user(
 ):
     # pylint: disable=invalid-name
     with flask_app_client.login(regular_user, auth_scopes=auth_scopes):
-        response = flask_app_client.get('/api/v1/teams/%d/members/' % team_for_regular_user.id)
+        response = flask_app_client.get(
+            '/api/v1/teams/%d/members/' % team_for_regular_user.id)
 
     assert response.status_code == 200
     assert response.content_type == 'application/json'
     assert isinstance(response.json, list)
     assert set(response.json[0].keys()) >= {'team', 'user', 'is_leader'}
-    assert set(member['team']['id'] for member in response.json) == {team_for_regular_user.id}
-    assert regular_user.id in set(member['user']['id'] for member in response.json)
+    assert set(member['team']['id'] for member in response.json) == \
+        {team_for_regular_user.id}
+    assert regular_user.id in \
+        set(member['user']['id'] for member in response.json)

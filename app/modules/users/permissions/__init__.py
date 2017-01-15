@@ -43,13 +43,15 @@ class Permission(BasePermission):
     @classmethod
     def get_query_class(cls):
         """
-        Returns extended BaseQuery class for flask_sqlalchemy model to provide get_or_403 method
+        Returns extended BaseQuery class for flask_sqlalchemy model
+        to provide get_or_403 method
 
         Example:
         >>> DataTransformation(db.Model):
         ...     query_class = OwnerRolePermission.get_query_class()
         """
-        return lambda *args, **kwargs: PermissionExtendedQuery(cls, *args, **kwargs)
+        return lambda *args, **kwargs: 
+            PermissionExtendedQuery(cls, *args, **kwargs)
 
 
 class PasswordRequiredPermissionMixin(object):
@@ -123,8 +125,9 @@ class AdminRolePermission(PasswordRequiredPermissionMixin, RolePermission):
 
     def rule(self):
         return (
-            rules.InternalRoleRule()
-            | (rules.AdminRoleRule() & super(AdminRolePermission, self).rule())
+            rules.InternalRoleRule() | (
+                rules.AdminRoleRule() & super(AdminRolePermission, self).rule()
+            )
         )
 
 
@@ -137,7 +140,8 @@ class InternalRolePermission(RolePermission):
         return rules.InternalRoleRule()
 
 
-class SupervisorRolePermission(PasswordRequiredPermissionMixin, RolePermission):
+class SupervisorRolePermission(
+        PasswordRequiredPermissionMixin, RolePermission):
     """
     Supervisor/Admin may execute this action.
     """
@@ -155,13 +159,11 @@ class SupervisorRolePermission(PasswordRequiredPermissionMixin, RolePermission):
 
     def rule(self):
         return (
-            rules.InternalRoleRule()
-            | (
+            rules.InternalRoleRule() | (
                 (
-                    rules.AdminRoleRule()
-                    | rules.SupervisorRoleRule(obj=self._obj)
-                )
-                & super(SupervisorRolePermission, self).rule()
+                    rules.AdminRoleRule() |
+                    rules.SupervisorRoleRule(obj=self._obj)
+                ) & super(SupervisorRolePermission, self).rule()
             )
         )
 
@@ -184,13 +186,11 @@ class OwnerRolePermission(PasswordRequiredPermissionMixin, RolePermission):
 
     def rule(self):
         return (
-            rules.InternalRoleRule()
-            | (
+            rules.InternalRoleRule() | (
                 (
-                    rules.AdminRoleRule()
-                    | rules.OwnerRoleRule(obj=self._obj)
-                    | rules.SupervisorRoleRule(obj=self._obj)
-                )
-                & super(OwnerRolePermission, self).rule()
+                    rules.AdminRoleRule() |
+                    rules.OwnerRoleRule(obj=self._obj) |
+                    rules.SupervisorRoleRule(obj=self._obj)
+                ) & super(OwnerRolePermission, self).rule()
             )
         )

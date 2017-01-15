@@ -15,9 +15,17 @@ class TeamMember(db.Model):
     """
     __tablename__ = 'team_member'
 
-    team_id = db.Column(db.Integer, db.ForeignKey('team.id'), primary_key=True)
+    team_id = db.Column(
+        db.Integer,
+        db.ForeignKey('team.id'),
+        primary_key=True
+    )
     team = db.relationship('Team')
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id'),
+        primary_key=True
+    )
     user = db.relationship(
         'User',
         backref=db.backref('teams_membership', cascade='delete, delete-orphan')
@@ -53,7 +61,10 @@ class Team(db.Model, Timestamp):
     Team database model.
     """
 
-    id = db.Column(db.Integer, primary_key=True) # pylint: disable=invalid-name
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )  # pylint: disable=invalid-name
     title = db.Column(db.String(length=50), nullable=False)
 
     members = db.relationship('TeamMember', cascade='delete, delete-orphan')
@@ -70,7 +81,7 @@ class Team(db.Model, Timestamp):
         )
 
     @db.validates('title')
-    def validate_title(self, key, title): # pylint: disable=unused-argument,no-self-use
+    def validate_title(self, key, title):  # pylint: disable=unused-argument,no-self-use
         if len(title) < 3:
             raise ValueError("Title has to be at least 3 characters long.")
         return title
@@ -80,7 +91,11 @@ class Team(db.Model, Timestamp):
         This is a helper method for OwnerRolePermission integration.
         """
         if db.session.query(
-                TeamMember.query.filter_by(team=self, is_leader=True, user=user).exists()
+            TeamMember.query.filter_by(
+                team=self,
+                is_leader=True,
+                user=user
+            ).exists()
         ).scalar():
             return True
         return False

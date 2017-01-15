@@ -18,19 +18,26 @@ def test_User_auth(user_instance):
 @pytest.mark.parametrize(
     'init_static_roles,is_internal,is_admin,is_regular_user,is_active',
     [
-        (_init_static_roles, _is_internal, _is_admin, _is_regular_user, _is_active) \
-                for _init_static_roles in (
-                    0,
-                    (models.User.StaticRoles.INTERNAL.mask
-                        | models.User.StaticRoles.ADMIN.mask
-                        | models.User.StaticRoles.REGULAR_USER.mask
-                        | models.User.StaticRoles.ACTIVE.mask
-                    )
-                ) \
-                    for _is_internal in (False, True) \
-                        for _is_admin in (False, True) \
-                            for _is_regular_user in (False, True) \
-                                for _is_active in (False, True)
+        (
+            _init_static_roles,
+            _is_internal,
+            _is_admin,
+            _is_regular_user,
+            _is_active
+        )
+        for _init_static_roles in (
+            0,
+            (
+                models.User.StaticRoles.INTERNAL.mask |
+                models.User.StaticRoles.ADMIN.mask |
+                models.User.StaticRoles.REGULAR_USER.mask |
+                models.User.StaticRoles.ACTIVE.mask
+            )
+        )
+        for _is_internal in (False, True)
+        for _is_admin in (False, True)
+        for _is_regular_user in (False, True)
+        for _is_active in (False, True)
     ]
 )
 def test_User_static_roles_setting(
@@ -39,8 +46,7 @@ def test_User_static_roles_setting(
         is_admin,
         is_regular_user,
         is_active,
-        user_instance
-    ):
+        user_instance):
     """
     Static User Roles are saved as bit flags into one ``static_roles``
     integer field. Ideally, it would be better implemented as a custom field,
@@ -69,16 +75,21 @@ def test_User_static_roles_setting(
     else:
         user_instance.unset_static_role(user_instance.StaticRoles.ACTIVE)
 
-    assert user_instance.has_static_role(user_instance.StaticRoles.INTERNAL) is is_internal
-    assert user_instance.has_static_role(user_instance.StaticRoles.ADMIN) is is_admin
-    assert user_instance.has_static_role(user_instance.StaticRoles.REGULAR_USER) is is_regular_user
-    assert user_instance.has_static_role(user_instance.StaticRoles.ACTIVE) is is_active
+    assert user_instance.has_static_role(
+        user_instance.StaticRoles.INTERNAL) is is_internal
+    assert user_instance.has_static_role(
+        user_instance.StaticRoles.ADMIN) is is_admin
+    assert user_instance.has_static_role(
+        user_instance.StaticRoles.REGULAR_USER) is is_regular_user
+    assert user_instance.has_static_role(
+        user_instance.StaticRoles.ACTIVE) is is_active
     assert user_instance.is_internal is is_internal
     assert user_instance.is_admin is is_admin
     assert user_instance.is_regular_user is is_regular_user
     assert user_instance.is_active is is_active
 
-    if not is_active and not is_regular_user and not is_admin and not is_internal:
+    if not is_active and not is_regular_user and \
+            not is_admin and not is_internal:
         assert user_instance.static_roles == 0
 
 
@@ -87,7 +98,8 @@ def test_User_check_owner(user_instance):
     assert not user_instance.check_owner(models.User())
 
 
-def test_User_find_with_password(patch_User_password_scheme, db): # pylint: disable=unused-argument
+def test_User_find_with_password(
+        patch_User_password_scheme, db):  # pylint: disable=unused-argument
 
     def create_user(username, password):
         user = models.User(
@@ -107,7 +119,8 @@ def test_User_find_with_password(patch_User_password_scheme, db): # pylint: disa
     db.session.commit()
 
     assert models.User.find_with_password("user1", "user1password") == user1
-    assert models.User.find_with_password("user1", "wrong-user1password") is None
+    assert models.User.find_with_password(
+        "user1", "wrong-user1password") is None
     assert models.User.find_with_password("user2", "user1password") is None
     assert models.User.find_with_password("user2", "user2password") == user2
     assert models.User.find_with_password("nouser", "userpassword") is None

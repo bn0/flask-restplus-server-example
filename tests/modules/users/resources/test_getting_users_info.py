@@ -24,11 +24,13 @@ def test_getting_list_of_users_by_unauthorized_user_must_fail(
     assert response.content_type == 'application/json'
     assert set(response.json.keys()) >= {'status', 'message'}
 
+
 @pytest.mark.parametrize('auth_scopes', (
     ('users:read', ),
     ('users:read', 'users:write', ),
 ))
-def test_getting_list_of_users_by_authorized_user(flask_app_client, admin_user, auth_scopes):
+def test_getting_list_of_users_by_authorized_user(
+        flask_app_client, admin_user, auth_scopes):
     # pylint: disable=invalid-name
     with flask_app_client.login(admin_user, auth_scopes=auth_scopes):
         response = flask_app_client.get('/api/v1/users/')
@@ -38,7 +40,9 @@ def test_getting_list_of_users_by_authorized_user(flask_app_client, admin_user, 
     assert isinstance(response.json, list)
     assert set(response.json[0].keys()) >= {'id', 'username'}
 
-def test_getting_user_info_by_unauthorized_user(flask_app_client, regular_user, admin_user):
+
+def test_getting_user_info_by_unauthorized_user(
+        flask_app_client, regular_user, admin_user):
     # pylint: disable=invalid-name
     with flask_app_client.login(regular_user, auth_scopes=('users:read',)):
         response = flask_app_client.get('/api/v1/users/%d' % admin_user.id)
@@ -48,7 +52,9 @@ def test_getting_user_info_by_unauthorized_user(flask_app_client, regular_user, 
     assert isinstance(response.json, dict)
     assert set(response.json.keys()) >= {'status', 'message'}
 
-def test_getting_user_info_by_authorized_user(flask_app_client, regular_user, admin_user):
+
+def test_getting_user_info_by_authorized_user(
+        flask_app_client, regular_user, admin_user):
     # pylint: disable=invalid-name
     with flask_app_client.login(admin_user, auth_scopes=('users:read',)):
         response = flask_app_client.get('/api/v1/users/%d' % regular_user.id)
@@ -58,6 +64,7 @@ def test_getting_user_info_by_authorized_user(flask_app_client, regular_user, ad
     assert isinstance(response.json, dict)
     assert set(response.json.keys()) >= {'id', 'username'}
     assert 'password' not in response.json.keys()
+
 
 def test_getting_user_info_by_owner(flask_app_client, regular_user):
     # pylint: disable=invalid-name
@@ -69,6 +76,7 @@ def test_getting_user_info_by_owner(flask_app_client, regular_user):
     assert isinstance(response.json, dict)
     assert set(response.json.keys()) >= {'id', 'username'}
     assert 'password' not in response.json.keys()
+
 
 def test_getting_user_me_info(flask_app_client, regular_user):
     # pylint: disable=invalid-name

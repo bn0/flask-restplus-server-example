@@ -27,7 +27,8 @@ class DenyAbortMixin(object):
         Abort HTTP request by raising HTTP error exception with a specified
         HTTP code.
         """
-        return abort(code=self.DENY_ABORT_HTTP_CODE, message=self.DENY_ABORT_MESSAGE)
+        return abort(
+            code=self.DENY_ABORT_HTTP_CODE, message=self.DENY_ABORT_MESSAGE)
 
 
 class Rule(BaseRule):
@@ -105,7 +106,8 @@ class PartialPermissionDeniedRule(Rule):
     """
 
     def check(self):
-        raise RuntimeError("Partial permissions are not intended to be checked")
+        raise RuntimeError(
+            "Partial permissions are not intended to be checked")
 
 
 class SupervisorRoleRule(ActiveUserRoleRule):

@@ -6,17 +6,16 @@ import logging
 import os
 
 
-log = logging.getLogger(__name__) # pylint: disable=invalid-name
+log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
 def download_file(
         url,
         local_filepath,
-        chunk_size=1024*512,
+        chunk_size=1024 * 512,
         lock_timeout=10,
         http_timeout=None,
-        session=None
-):
+        session=None):
     # pylint: disable=too-many-arguments
     """
     A helper function which can download a file from a specified ``url`` to a
@@ -33,13 +32,15 @@ def download_file(
         lock.acquire(timeout=lock_timeout)
     except lockfile.LockTimeout:
         log.info(
-            "File '%s' is locked. Probably another instance is still downloading it.",
-            local_filepath
+            "File '%s' is locked. Probably another instance is still "
+            "downloading it.", local_filepath
         )
         raise
     try:
         if not os.path.exists(local_filepath):
-            log.info("Downloading a file from '%s' to '%s'", url, local_filepath)
+            log.info(
+                "Downloading a file from '%s' to '%s'", url, local_filepath
+            )
             if session is None:
                 session = requests
             response = session.get(url, stream=True, timeout=http_timeout)

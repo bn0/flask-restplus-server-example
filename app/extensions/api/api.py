@@ -26,7 +26,8 @@ class Api(BaseApi):
             if authorization_settings['type'].startswith('oauth'):
                 assert scope_name not in authorization_settings['scopes'], \
                     "OAuth scope %s already exists" % scope_name
-                authorization_settings['scopes'][scope_name] = scope_description
+                authorization_settings['scopes'][scope_name] = \
+                    scope_description
 
     def add_namespace(self, ns):
         # Rewrite security rules for OAuth scopes since Namespaces don't have
@@ -36,16 +37,16 @@ class Api(BaseApi):
                 method_func = getattr(resource, method.lower())
 
                 if (
-                        hasattr(method_func, '__apidoc__')
-                        and
-                        'security' in method_func.__apidoc__
-                        and
-                        '__oauth__' in method_func.__apidoc__['security']
+                    hasattr(method_func, '__apidoc__') and
+                    'security' in method_func.__apidoc__ and
+                    '__oauth__' in method_func.__apidoc__['security']
                 ):
-                    oauth_scopes = method_func.__apidoc__['security']['__oauth__']['scopes']
+                    oauth_scopes = \
+                        method_func.__apidoc__['security']['__oauth__']['scopes']
                     method_func.__apidoc__['security'] = {
                         auth_name: oauth_scopes
-                        for auth_name, auth_settings in iteritems(self.authorizations)
+                        for auth_name, auth_settings in
+                        iteritems(self.authorizations)
                         if auth_settings['type'].startswith('oauth')
                     }
 

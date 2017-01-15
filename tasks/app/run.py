@@ -25,8 +25,7 @@ def run(
         port=5000,
         flask_config=None,
         install_dependencies=True,
-        upgrade_db=True
-    ):
+        upgrade_db=True):
     """
     Run Example RESTful API Server.
     """
@@ -58,9 +57,9 @@ def run(
     use_reloader = app.debug
     if platform.system() == 'Windows':
         warnings.warn(
-                "Auto-reloader feature doesn't work on Windows. "
-                "Follow the issue for more details: "
-                "https://github.com/frol/flask-restplus-server-example/issues/16"
-            )
+            "Auto-reloader feature doesn't work on Windows. "
+            "Follow the issue for more details: "
+            "https://github.com/frol/flask-restplus-server-example/issues/16"
+        )
         use_reloader = False
     app.run(host=host, port=port, use_reloader=use_reloader)

@@ -74,13 +74,16 @@ class PatchJSONParameters(Parameters):
     def __init__(self, *args, **kwargs):
         super(PatchJSONParameters, self).__init__(*args, many=True, **kwargs)
         if not self.PATH_CHOICES:
-            raise ValueError("%s.PATH_CHOICES has to be set" % self.__class__.__name__)
+            raise ValueError(
+                "%s.PATH_CHOICES has to be set" % self.__class__.__name__)
         # Make a copy of `validators` as otherwise we will modify the behaviour
         # of all `marshmallow.Schema`-based classes
         self.fields['op'].validators = \
-            self.fields['op'].validators + [validate.OneOf(self.OPERATION_CHOICES)]
+            self.fields['op'].validators + \
+            [validate.OneOf(self.OPERATION_CHOICES)]
         self.fields['path'].validators = \
-            self.fields['path'].validators + [validate.OneOf(self.PATH_CHOICES)]
+            self.fields['path'].validators + \
+            [validate.OneOf(self.PATH_CHOICES)]
 
     @validates_schema
     def validate_patch_structure(self, data):
@@ -98,7 +101,8 @@ class PatchJSONParameters(Parameters):
             raise ValidationError('value is required')
 
         if 'path' not in data:
-            raise ValidationError('Path is required and must always begin with /')
+            raise ValidationError(
+                'Path is required and must always begin with /')
         else:
             data['field_name'] = data['path'][1:]
 
@@ -111,12 +115,14 @@ class PatchJSONParameters(Parameters):
         if state is None:
             state = {}
         for operation in operations:
-            if not cls._process_patch_operation(operation, obj=obj, state=state):
+            if not cls._process_patch_operation(
+                    operation, obj=obj, state=state):
                 log.info(
                     "%s patching has stopped because of unknown operation %s",
                     (obj.__name__, operation)
                 )
-                raise ValidationError("Failed to update %s details." % obj.__name__)
+                raise ValidationError(
+                    "Failed to update %s details." % obj.__name__)
         return True
 
     @classmethod
@@ -128,24 +134,30 @@ class PatchJSONParameters(Parameters):
             state (dict): inter-operations state storage
 
         Returns:
-            processing_status (bool): True if operation was handled, otherwise False.
+            processing_status (bool): True if operation was
+                handled, otherwise False.
         """
         field_operaion = operation['op']
 
         if field_operaion == cls.OP_REPLACE:
-            return cls.replace(obj, operation['field_name'], operation['value'], state=state)
+            return cls.replace(
+                obj, operation['field_name'], operation['value'], state=state)
 
         elif field_operaion == cls.OP_TEST:
-            return cls.test(obj, operation['field_name'], operation['value'], state=state)
+            return cls.test(
+                obj, operation['field_name'], operation['value'], state=state)
 
         elif field_operaion == cls.OP_ADD:
-            return cls.add(obj, operation['field_name'], operation['value'], state=state)
+            return cls.add(
+                obj, operation['field_name'], operation['value'], state=state)
 
         elif field_operaion == cls.OP_MOVE:
-            return cls.move(obj, operation['field_name'], operation['value'], state=state)
+            return cls.move(
+                obj, operation['field_name'], operation['value'], state=state)
 
         elif field_operaion == cls.OP_COPY:
-            return cls.copy(obj, operation['field_name'], operation['value'], state=state)
+            return cls.copy(
+                obj, operation['field_name'], operation['value'], state=state)
 
         elif field_operaion == cls.OP_REMOVE:
             return cls.remove(obj, operation['field_name'], state=state)
@@ -168,7 +180,8 @@ class PatchJSONParameters(Parameters):
             processing_status (bool): True
         """
         if not hasattr(obj, field):
-            raise ValidationError("Field '%s' does not exist, so it cannot be patched" % field)
+            raise ValidationError(
+                "Field '%s' does not exist, so it cannot be patched" % field)
         setattr(obj, field, value)
         return True
 

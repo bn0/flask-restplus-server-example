@@ -21,7 +21,8 @@ def test_getting_list_of_oauth2_clients_by_authorized_user(
     assert response.content_type == 'application/json'
     assert isinstance(response.json, list)
     assert set(response.json[0].keys()) >= {'client_id'}
-    assert response.json[0]['client_id'] == regular_user_oauth2_client.client_id
+    assert response.json[0]['client_id'] == \
+        regular_user_oauth2_client.client_id
 
 
 @pytest.mark.parametrize('auth_scopes', (

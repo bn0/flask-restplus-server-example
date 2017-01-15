@@ -11,11 +11,13 @@ class Swagger(OriginalSwagger):
             return []
         if isinstance(schema, list):
             return schema
-        if isinstance(schema, dict) and all(isinstance(field, dict) for field in schema.values()):
+        if isinstance(schema, dict) and \
+                all(isinstance(field, dict) for field in schema.values()):
             return list(schema.values())
 
         if 'in' in schema.context and 'json' in schema.context['in']:
             default_location = 'body'
         else:
             default_location = 'query'
-        return schema2parameters(schema, default_in=default_location, required=True, dump=False)
+        return schema2parameters(
+            schema, default_in=default_location, required=True, dump=False)

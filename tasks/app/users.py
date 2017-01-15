@@ -14,8 +14,7 @@ def create_user(
         is_internal=False,
         is_admin=False,
         is_regular_user=True,
-        is_active=True
-    ):
+        is_active=True):
     """
     Create a new user.
     """
@@ -44,8 +43,7 @@ def create_oauth2_client(
         username,
         client_id,
         client_secret,
-        default_scopes=None
-    ):
+        default_scopes=None):
     """
     Create a new OAuth2 Client associated with a given user (username).
     """
@@ -58,7 +56,8 @@ def create_oauth2_client(
 
     if default_scopes is None:
         from app.extensions.api import api_v1
-        default_scopes = ' '.join(api_v1.authorizations['oauth2_password']['scopes'])
+        default_scopes = \
+            ' '.join(api_v1.authorizations['oauth2_password']['scopes'])
 
     oauth2_client = OAuth2Client(
         client_id=client_id,

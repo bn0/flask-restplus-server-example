@@ -56,7 +56,8 @@ class AutoAuthFlaskClient(FlaskClient):
             extra_headers = (
                 (
                     'Authorization',
-                    '{token.token_type} {token.access_token}'.format(token=oauth2_bearer_token)
+                    '{token.token_type} {token.access_token}'.format(
+                        token=oauth2_bearer_token)
                 ),
             )
             if kwargs.get('headers'):

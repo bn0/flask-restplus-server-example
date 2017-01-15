@@ -10,7 +10,8 @@ def test_new_team_creation(flask_app_client, db, regular_user):
     # pylint: disable=invalid-name
     team_title = "Test Team Title"
     with flask_app_client.login(regular_user, auth_scopes=('teams:write', )):
-        response = flask_app_client.post('/api/v1/teams/', data={'title': team_title})
+        response = flask_app_client.post(
+            '/api/v1/teams/', data={'title': team_title})
 
     assert response.status_code == 200
     assert response.content_type == 'application/json'
@@ -23,14 +24,15 @@ def test_new_team_creation(flask_app_client, db, regular_user):
     db.session.delete(team)
     db.session.commit()
 
-def test_new_team_first_member_is_creator(flask_app_client, db, regular_user):
+
+def test_new_team_first_member_is_creator(
+        flask_app_client, db, regular_user):
     # pylint: disable=invalid-name
     team_title = "Test Team Title"
-    with flask_app_client.login(
-            regular_user,
-            auth_scopes=('teams:write', 'teams:read')
-        ):
-        response = flask_app_client.post('/api/v1/teams/', data={'title': team_title})
+    with flask_app_client.login(regular_user,
+                                auth_scopes=('teams:write', 'teams:read')):
+        response = flask_app_client.post(
+            '/api/v1/teams/', data={'title': team_title})
 
     assert response.status_code == 200
     assert response.content_type == 'application/json'
@@ -47,7 +49,8 @@ def test_new_team_first_member_is_creator(flask_app_client, db, regular_user):
     db.session.commit()
 
 
-def test_new_team_creation_with_invalid_data_must_fail(flask_app_client, regular_user):
+def test_new_team_creation_with_invalid_data_must_fail(
+        flask_app_client, regular_user):
     # pylint: disable=invalid-name
     with flask_app_client.login(regular_user, auth_scopes=('teams:write', )):
         response = flask_app_client.post('/api/v1/teams/', data={'title': ""})
@@ -57,7 +60,8 @@ def test_new_team_creation_with_invalid_data_must_fail(flask_app_client, regular
     assert set(response.json.keys()) >= {'status', 'message'}
 
 
-def test_update_team_info(flask_app_client, regular_user, team_for_regular_user):
+def test_update_team_info(
+        flask_app_client, regular_user, team_for_regular_user):
     # pylint: disable=invalid-name
     team_title = "Test Team Title"
     with flask_app_client.login(regular_user, auth_scopes=('teams:write', )):
@@ -160,7 +164,8 @@ def test_team_deletion(flask_app_client, regular_user, team_for_regular_user):
     assert response.content_type == 'application/json'
 
 
-def test_add_new_team_member(flask_app_client, db, regular_user, admin_user, team_for_regular_user):
+def test_add_new_team_member(
+        flask_app_client, db, regular_user, admin_user, team_for_regular_user):
     # pylint: disable=invalid-name
     with flask_app_client.login(regular_user, auth_scopes=('teams:write', )):
         response = flask_app_client.post(
@@ -177,19 +182,21 @@ def test_add_new_team_member(flask_app_client, db, regular_user, admin_user, tea
     assert response.json['user']['id'] == admin_user.id
 
     # Cleanup
-    team_members = models.TeamMember.query.filter_by(team=team_for_regular_user, user=admin_user)
+    team_members = models.TeamMember.query.filter_by(
+        team=team_for_regular_user, user=admin_user)
     assert team_members.count() == 1
     team_members.delete()
     db.session.commit()
 
 
 def test_delete_team_member(
-        flask_app_client, db, regular_user, readonly_user, team_for_regular_user
-):
+        flask_app_client, db, regular_user, readonly_user,
+        team_for_regular_user):
     # pylint: disable=invalid-name,unused-argument
     with flask_app_client.login(regular_user, auth_scopes=('teams:write', )):
         response = flask_app_client.delete(
-            '/api/v1/teams/%d/members/%d' % (team_for_regular_user.id, readonly_user.id),
+            '/api/v1/teams/%d/members/%d' %
+            (team_for_regular_user.id, readonly_user.id),
         )
 
     assert response.status_code == 200

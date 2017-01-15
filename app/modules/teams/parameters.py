@@ -14,7 +14,8 @@ from .models import Team
 class CreateTeamParameters(PostFormParameters, schemas.BaseTeamSchema):
 
     class Meta(schemas.BaseTeamSchema.Meta):
-        # This is not supported yet: https://github.com/marshmallow-code/marshmallow/issues/344
+        # This is not supported yet:
+        # https://github.com/marshmallow-code/marshmallow/issues/344
         required = (
             Team.title.key,
         )

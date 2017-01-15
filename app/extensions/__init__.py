@@ -48,13 +48,14 @@ def init_app(app):
     Application extensions initialization.
     """
     for extension in (
-            cross_origin_resource_sharing,
-            db,
-            login_manager,
-            marshmallow,
-            api,
-            oauth2,
+        cross_origin_resource_sharing,
+        db,
+        login_manager,
+        marshmallow,
+        api,
+        oauth2,
     ):
         extension.init_app(app)
 
-    app.extensions['migrate'] = AlembicDatabaseMigrationConfig(db, compare_type=True)
+    app.extensions['migrate'] = \
+        AlembicDatabaseMigrationConfig(db, compare_type=True)

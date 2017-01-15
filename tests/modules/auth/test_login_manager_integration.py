@@ -14,6 +14,7 @@ def test_loading_user_from_anonymous_request(flask_app):
     with flask_app.test_request_context('/'):
         assert auth.load_user_from_request(request) is None
 
+
 def test_loading_user_from_request_with_oauth_user_cached(flask_app):
     # pylint: disable=invalid-name
     mock_user = Mock()
@@ -23,7 +24,9 @@ def test_loading_user_from_request_with_oauth_user_cached(flask_app):
         assert auth.load_user_from_request(request) == mock_user
         del request.oauth
 
-def test_loading_user_from_request_with_bearer_token(flask_app, db, regular_user):
+
+def test_loading_user_from_request_with_bearer_token(
+        flask_app, db, regular_user):
     # pylint: disable=invalid-name
     oauth2_bearer_token = auth.models.OAuth2Token(
         client_id=0,

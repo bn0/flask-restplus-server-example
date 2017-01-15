@@ -57,9 +57,9 @@ class OAuth2Clients(Resource):
         pair associated with a user.
         """
         with api.commit_or_abort(
-                db.session,
-                default_error_message="Failed to create a new OAuth2 client."
-            ):
+            db.session,
+            default_error_message="Failed to create a new OAuth2 client."
+        ):
             # TODO: reconsider using gen_salt
             new_oauth2_client = OAuth2Client(
                 user_id=current_user.id,

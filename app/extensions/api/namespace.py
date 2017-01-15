@@ -23,7 +23,8 @@ class Namespace(BaseNamespace):
 
     WEBARGS_PARSER = CustomWebargsParser()
 
-    def resolve_object_by_model(self, model, object_arg_name, identity_arg_name=None):
+    def resolve_object_by_model(self, model, object_arg_name,
+                                identity_arg_name=None):
         """
         A helper decorator to resolve DB record instance by id.
 
@@ -46,7 +47,8 @@ class Namespace(BaseNamespace):
             identity_arg_name = '%s_id' % object_arg_name
         return self.resolve_object(
             object_arg_name,
-            resolver=lambda kwargs: model.query.get_or_404(kwargs.pop(identity_arg_name))
+            resolver=lambda kwargs: model.query.get_or_404(
+                kwargs.pop(identity_arg_name))
         )
 
     def model(self, name=None, model=None, **kwargs):
@@ -133,12 +135,14 @@ class Namespace(BaseNamespace):
             if hasattr(protected_func, '__apidoc__') \
                     and 'security' in protected_func.__apidoc__ \
                     and '__oauth__' in protected_func.__apidoc__['security']:
-                _oauth_scopes = protected_func.__apidoc__['security']['__oauth__']['scopes']
+                _oauth_scopes = \
+                    protected_func.__apidoc__['security']['__oauth__']['scopes']
             else:
                 _oauth_scopes = oauth_scopes
 
             oauth_protection_decorator = oauth2.require_oauth(*_oauth_scopes)
-            self._register_access_restriction_decorator(protected_func, oauth_protection_decorator)
+            self._register_access_restriction_decorator(
+                protected_func, oauth_protection_decorator)
             oauth_protected_func = oauth_protection_decorator(protected_func)
 
             return self.doc(
@@ -216,7 +220,8 @@ class Namespace(BaseNamespace):
                         return wrapper
 
                 protected_func = _permission_decorator(func)
-                self._register_access_restriction_decorator(protected_func, _permission_decorator)
+                self._register_access_restriction_decorator(
+                    protected_func, _permission_decorator)
 
             # Apply `_role_permission_applied` marker for Role Permissions,
             # so don't apply unnecessary permissions in `login_required`
@@ -225,29 +230,22 @@ class Namespace(BaseNamespace):
             # TODO: Change this behaviour when implement advanced OPTIONS
             # method support
             if (
-                    isinstance(permission, permissions.RolePermission)
-                    or
-                    (
-                        isinstance(permission, type)
-                        and
-                        issubclass(permission, permissions.RolePermission)
-                    )
+                isinstance(permission, permissions.RolePermission) or
+                (isinstance(permission, type) and
+                    issubclass(permission, permissions.RolePermission))
             ):
                 protected_func._role_permission_applied = True  # pylint: disable=protected-access
-
             permission_description = permission.__doc__.strip()
             return self.doc(
                 description="**PERMISSIONS: %s**\n\n" % permission_description
-            )(
-                self.response(
-                    code=http_exceptions.Forbidden.code,
-                    description=permission_description,
-                )(protected_func)
-            )
-
+            )(self.response(
+                code=http_exceptions.Forbidden.code,
+                description=permission_description
+            )(protected_func))
         return decorator
 
-    def _register_access_restriction_decorator(self, func, decorator_to_register):
+    def _register_access_restriction_decorator(self, func,
+                                               decorator_to_register):
         # pylint: disable=invalid-name
         """
         Helper function to register decorator to function to perform checks
@@ -258,7 +256,8 @@ class Namespace(BaseNamespace):
         func._access_restriction_decorators.append(decorator_to_register)  # pylint: disable=protected-access
 
     @contextmanager
-    def commit_or_abort(self, session, default_error_message="The operation failed to complete"):
+    def commit_or_abort(self, session, default_error_message=""
+                        "The operation failed to complete"):
         """
         Context manager to simplify a workflow in resources
 
@@ -277,7 +276,10 @@ class Namespace(BaseNamespace):
                 yield session
                 session.commit()
             except ValueError as exception:
-                http_exceptions.abort(code=http_exceptions.Conflict.code, message=str(exception))
+                http_exceptions.abort(
+                    code=http_exceptions.Conflict.code,
+                    message=str(exception)
+                )
             except sqlalchemy.exc.IntegrityError:
                 http_exceptions.abort(
                     code=http_exceptions.Conflict.code,

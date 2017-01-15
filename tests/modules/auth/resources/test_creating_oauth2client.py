@@ -35,14 +35,16 @@ def test_creating_oauth2_client(
     assert isinstance(response.json['client_id'], six.text_type)
     assert isinstance(response.json['client_secret'], six.text_type)
     assert isinstance(response.json['default_scopes'], list)
-    assert set(response.json['default_scopes']) == {'users:read', 'users:write', 'auth:read'}
+    assert set(response.json['default_scopes']) == \
+        {'users:read', 'users:write', 'auth:read'}
     assert isinstance(response.json['redirect_uris'], list)
 
     # Cleanup
     from app.modules.auth.models import OAuth2Client
 
     oauth2_client_instance = OAuth2Client.query.get(response.json['client_id'])
-    assert oauth2_client_instance.client_secret == response.json['client_secret']
+    assert oauth2_client_instance.client_secret == \
+        response.json['client_secret']
 
     db.session.delete(oauth2_client_instance)
     db.session.commit()

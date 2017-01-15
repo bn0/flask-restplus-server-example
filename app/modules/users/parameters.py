@@ -21,12 +21,19 @@ class AddUserParameters(PostFormParameters, schemas.BaseUserSchema):
     New user creation (sign up) parameters.
     """
 
-    username = base_fields.String(description="Example: root", required=True)
-    email = base_fields.Email(description="Example: root@gmail.com", required=True)
+    username = base_fields.String(
+        description="Example: root",
+        required=True
+    )
+    email = base_fields.Email(
+        description="Example: root@gmail.com",
+        required=True
+    )
     password = base_fields.String(description="No rules yet", required=True)
     recaptcha_key = base_fields.String(
         description=(
-            "See `/users/signup_form` for details. It is required for everybody, except admins"
+            "See `/users/signup_form` for details. "
+            "It is required for everybody, except admins"
         ),
         required=False
     )
@@ -43,8 +50,8 @@ class AddUserParameters(PostFormParameters, schemas.BaseUserSchema):
         """"
         Check reCAPTCHA if necessary.
 
-        NOTE: we remove 'recaptcha_key' from data once checked because we don't need it
-        in the resource
+        NOTE: we remove 'recaptcha_key' from data once checked because
+        we don't need it in the resource
         """
         recaptcha_key = data.pop('recaptcha_key', None)
         captcha_is_valid = False
@@ -56,7 +63,10 @@ class AddUserParameters(PostFormParameters, schemas.BaseUserSchema):
             captcha_is_valid = True
 
         if not captcha_is_valid:
-            abort(code=http_exceptions.Forbidden.code, message="CAPTCHA key is incorrect.")
+            abort(
+                code=http_exceptions.Forbidden.code,
+                message="CAPTCHA key is incorrect."
+            )
 
 
 class PatchUserDetailsParameters(PatchJSONParameters):
@@ -82,11 +92,15 @@ class PatchUserDetailsParameters(PatchJSONParameters):
     @classmethod
     def test(cls, obj, field, value, state):
         """
-        Additional check for 'current_password' as User hasn't field 'current_password'
+        Additional check for 'current_password' as User hasn't
+        field 'current_password'
         """
         if field == 'current_password':
             if current_user.password != value and obj.password != value:
-                abort(code=http_exceptions.Forbidden.code, message="Wrong password")
+                abort(
+                    code=http_exceptions.Forbidden.code,
+                    message="Wrong password"
+                )
             else:
                 state['current_password'] = value
                 return True
@@ -106,8 +120,8 @@ class PatchUserDetailsParameters(PatchJSONParameters):
         """
         if 'current_password' not in state:
             raise ValidationError(
-                "Updating sensitive user settings requires `current_password` test operation "
-                "performed before replacements."
+                "Updating sensitive user settings requires `current_password` "
+                "test operation performed before replacements."
             )
 
         if field in {'is_active', 'is_readonly'}:
@@ -115,14 +129,15 @@ class PatchUserDetailsParameters(PatchJSONParameters):
                     obj=obj,
                     password_required=True,
                     password=state['current_password']
-                ):
+            ):
                 # Access granted
                 pass
         elif field == 'is_admin':
             with permissions.AdminRolePermission(
                     password_required=True,
                     password=state['current_password']
-                ):
+            ):
                 # Access granted
                 pass
-        return super(PatchUserDetailsParameters, cls).replace(obj, field, value, state)
+        return super(
+            PatchUserDetailsParameters, cls).replace(obj, field, value, state)
