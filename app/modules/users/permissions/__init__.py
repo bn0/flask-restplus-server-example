@@ -50,8 +50,8 @@ class Permission(BasePermission):
         >>> DataTransformation(db.Model):
         ...     query_class = OwnerRolePermission.get_query_class()
         """
-        return lambda *args, **kwargs: 
-            PermissionExtendedQuery(cls, *args, **kwargs)
+        return lambda *args, **kwargs: PermissionExtendedQuery(
+            cls, *args, **kwargs)
 
 
 class PasswordRequiredPermissionMixin(object):
