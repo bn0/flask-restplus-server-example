@@ -47,14 +47,16 @@ def init_app(app):
     """
     Application extensions initialization.
     """
-    for extension in (
+    enabled_extensions = [
         cross_origin_resource_sharing,
         db,
         login_manager,
         marshmallow,
         api,
         oauth2,
-    ):
+    ]
+
+    for extension in enabled_extensions:
         extension.init_app(app)
 
     app.extensions['migrate'] = \
