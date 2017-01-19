@@ -35,12 +35,9 @@ class Api(BaseApi):
         for resource, _, _ in ns.resources:
             for method in resource.methods:
                 method_func = getattr(resource, method.lower())
-
-                if (
-                    hasattr(method_func, '__apidoc__') and
-                    'security' in method_func.__apidoc__ and
-                    '__oauth__' in method_func.__apidoc__['security']
-                ):
+                if (hasattr(method_func, '__apidoc__') and
+                        'security' in method_func.__apidoc__ and
+                        '__oauth__' in method_func.__apidoc__['security']):
                     oauth_scopes = \
                         method_func.__apidoc__['security']['__oauth__']['scopes']
                     method_func.__apidoc__['security'] = {
@@ -49,5 +46,4 @@ class Api(BaseApi):
                         iteritems(self.authorizations)
                         if auth_settings['type'].startswith('oauth')
                     }
-
         super(Api, self).add_namespace(ns)
